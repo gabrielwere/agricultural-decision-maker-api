@@ -88,6 +88,8 @@ public class AggregationController extends HttpServlet{
             }
 
         }
+
+        
         
         
         utility.sendCoordinatesAsJson(response,aggregationValues);
