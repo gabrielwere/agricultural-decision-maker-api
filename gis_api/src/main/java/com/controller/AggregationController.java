@@ -98,11 +98,11 @@ public class AggregationController extends HttpServlet{
         //| AIRFIELDS   |             |        |      1    |
 
         
-        String option = "urban";
+        String option = "airfields";
 
-        double sumOfColumn1 = 0;
-        // double sumOfColumn2 = 0;
-        // double sumOfColumn3 = 0;
+        double sumOfColumn;
+        int i;
+        int j;
 
         //7 means strong importance
         //1 means equal importance
@@ -115,36 +115,155 @@ public class AggregationController extends HttpServlet{
                 pairwiseMatrix[0][2] = 7;
 
                 //second row
-                pairwiseMatrix[1][0] = 1/7;
+                pairwiseMatrix[1][0] = 1/7.0;
                 pairwiseMatrix[1][1] = 1;
                 pairwiseMatrix[1][2] = 1;
 
                 //third row
-                pairwiseMatrix[2][0] = 1/7;
+                pairwiseMatrix[2][0] = 1/7.0;
                 pairwiseMatrix[2][1] = 1;
                 pairwiseMatrix[2][2] = 1;
 
-                for(int i=0;i<3;i++){
-                    for(int j=0;j<3;j++){ 
-                        sumOfColumn1 += pairwiseMatrix[j][i];
-                    }
-                    for(int x=0;x<3;x++){
-                        for(int k=0;k<3;k++){ 
-                            pairwiseMatrix[k][x] /= sumOfColumn1; 
-                        }
-                    }
-                    
-                }
+              
 
-                System.out.println(option);
-                for(int i=0;i<3;i++){
-                    for(int j=0;j<3;j++){
+                for(i=0;i<3;i++){
+                    for(j=0;j<3;j++){
                         System.out.printf("%f\t",pairwiseMatrix[i][j]);
                     }
                     System.out.println();
                 }
 
+                for(i=0;i<3;i++){
+
+                    sumOfColumn = 0.0;
+
+                    for(j=0;j<3;j++){ 
+                        sumOfColumn += pairwiseMatrix[j][i];
+                    }
+
+                    for(j=0;j<3;j++){
+                        pairwiseMatrix[j][i] /= sumOfColumn;
+                    } 
+                }
+            case "roads":
+                //first row
+                pairwiseMatrix[0][0] = 1;
+                pairwiseMatrix[0][1] = 1/7.0;
+                pairwiseMatrix[0][2] = 1;
+ 
+                //second row
+                pairwiseMatrix[1][0] = 7;
+                pairwiseMatrix[1][1] = 1;
+                pairwiseMatrix[1][2] = 7;
+ 
+                //third row
+                pairwiseMatrix[2][0] = 1;
+                pairwiseMatrix[2][1] = 1/7.0;
+                pairwiseMatrix[2][2] = 1;
+ 
+ 
+                for(i=0;i<3;i++){
+                    for(j=0;j<3;j++){
+                        System.out.printf("%f\t",pairwiseMatrix[i][j]);
+                    }
+                    System.out.println();
+                }
+ 
+                for(i=0;i<3;i++){
+ 
+                    sumOfColumn = 0.0;
+ 
+                    for(j=0;j<3;j++){ 
+                        sumOfColumn += pairwiseMatrix[j][i];
+                    }
+ 
+                    for(j=0;j<3;j++){
+                        pairwiseMatrix[j][i] /= sumOfColumn;
+                    } 
+                }
+            
+            case "airfields":
+                //first row
+                pairwiseMatrix[0][0] = 1;
+                pairwiseMatrix[0][1] = 1;
+                pairwiseMatrix[0][2] = 1/7.0;
+ 
+                //second row
+                pairwiseMatrix[1][0] = 1;
+                pairwiseMatrix[1][1] = 1;
+                pairwiseMatrix[1][2] = 1/7.0;
+ 
+                //third row
+                pairwiseMatrix[2][0] = 7;
+                pairwiseMatrix[2][1] = 7;
+                pairwiseMatrix[2][2] = 1;
+ 
+ 
+                for(i=0;i<3;i++){
+                    for(j=0;j<3;j++){
+                        System.out.printf("%f\t",pairwiseMatrix[i][j]);
+                    }
+                    System.out.println();
+                }
+ 
+                for(i=0;i<3;i++){
+ 
+                    sumOfColumn = 0.0;
+ 
+                    for(j=0;j<3;j++){ 
+                        sumOfColumn += pairwiseMatrix[j][i];
+                    }
+ 
+                    for(j=0;j<3;j++){
+                        pairwiseMatrix[j][i] /= sumOfColumn;
+                    } 
+                }
+            
+            default:
+                //first row
+                pairwiseMatrix[0][0] = 1;
+                pairwiseMatrix[0][1] = 1;
+                pairwiseMatrix[0][2] = 1;
+ 
+                //second row
+                pairwiseMatrix[1][0] = 1;
+                pairwiseMatrix[1][1] = 1;
+                pairwiseMatrix[1][2] = 1;
+ 
+                //third row
+                pairwiseMatrix[2][0] = 1;
+                pairwiseMatrix[2][1] = 1;
+                pairwiseMatrix[2][2] = 1;
         }
+
+        double weightOfUrban;
+        double weightOfRoads;
+        double weightOfAirfields;
+
+        double sumOfRow1 = 0.0;
+        double sumOfRow2 = 0.0;
+        double sumOfRow3 = 0.0;
+
+
+        for(i=0;i<3;i++){
+            sumOfRow1 += pairwiseMatrix[0][i];
+        }
+        weightOfUrban = sumOfRow1/3;
+
+        for(i=0;i<3;i++){
+            sumOfRow2 += pairwiseMatrix[1][i];
+        }
+        weightOfRoads = sumOfRow2/3;
+
+        for(i=0;i<3;i++){
+            sumOfRow3 += pairwiseMatrix[2][i];
+        }
+        weightOfAirfields = sumOfRow3/3;
+
+        System.out.println(weightOfUrban);
+        System.out.println(weightOfRoads);
+        System.out.println(weightOfAirfields);
+
         
         utility.sendCoordinatesAsJson(response,aggregationValues);
     }
