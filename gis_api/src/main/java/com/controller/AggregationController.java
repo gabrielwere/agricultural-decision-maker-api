@@ -44,7 +44,6 @@ public class AggregationController extends HttpServlet{
             
             //Shortest road distance calculation
             for(int j=0;j<roadValues.size();j++){
-                
                 double distance = aggregationValues.get(i).Haversine(roadValues.get(j).getLatitude(), roadValues.get(j).getLongitude());
 
                 //special computation for first iteration
@@ -89,8 +88,63 @@ public class AggregationController extends HttpServlet{
 
         }
 
+        //Analytic Hierarchy Process
+        double[][] pairwiseMatrix = new double[3][3];
+
+        //The pairwise comparison matrix should appear as follows
+        //|             | URBAN AREAS |  ROADS | AIRFIELDS |
+        //| URBAN AREAS |     1       |        |           |
+        //| ROADS       |             |    1   |           |
+        //| AIRFIELDS   |             |        |      1    |
+
         
-        
+        String option = "urban";
+
+        double sumOfColumn1 = 0;
+        // double sumOfColumn2 = 0;
+        // double sumOfColumn3 = 0;
+
+        //7 means strong importance
+        //1 means equal importance
+        switch(option){
+
+            case "urban":
+                //first row
+                pairwiseMatrix[0][0] = 1;
+                pairwiseMatrix[0][1] = 7;
+                pairwiseMatrix[0][2] = 7;
+
+                //second row
+                pairwiseMatrix[1][0] = 1/7;
+                pairwiseMatrix[1][1] = 1;
+                pairwiseMatrix[1][2] = 1;
+
+                //third row
+                pairwiseMatrix[2][0] = 1/7;
+                pairwiseMatrix[2][1] = 1;
+                pairwiseMatrix[2][2] = 1;
+
+                for(int i=0;i<3;i++){
+                    for(int j=0;j<3;j++){ 
+                        sumOfColumn1 += pairwiseMatrix[j][i];
+                    }
+                    for(int x=0;x<3;x++){
+                        for(int k=0;k<3;k++){ 
+                            pairwiseMatrix[k][x] /= sumOfColumn1; 
+                        }
+                    }
+                    
+                }
+
+                System.out.println(option);
+                for(int i=0;i<3;i++){
+                    for(int j=0;j<3;j++){
+                        System.out.printf("%f\t",pairwiseMatrix[i][j]);
+                    }
+                    System.out.println();
+                }
+
+        }
         
         utility.sendCoordinatesAsJson(response,aggregationValues);
     }
