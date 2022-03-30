@@ -145,6 +145,8 @@ public class AggregationController extends HttpServlet{
                         pairwiseMatrix[j][i] /= sumOfColumn;
                     } 
                 }
+                break;
+
             case "roads":
                 //first row
                 pairwiseMatrix[0][0] = 1;
@@ -181,6 +183,7 @@ public class AggregationController extends HttpServlet{
                         pairwiseMatrix[j][i] /= sumOfColumn;
                     } 
                 }
+                break;
             
             case "airfields":
                 //first row
@@ -218,6 +221,7 @@ public class AggregationController extends HttpServlet{
                         pairwiseMatrix[j][i] /= sumOfColumn;
                     } 
                 }
+                break;
             
             default:
                 //first row
@@ -264,8 +268,78 @@ public class AggregationController extends HttpServlet{
         System.out.println(weightOfRoads);
         System.out.println(weightOfAirfields);
 
+        //normalize the values
+        normalizeValues(aggregationValues);
         
+        //send normalised values as json
         utility.sendCoordinatesAsJson(response,aggregationValues);
+    }
+
+    protected void normalizeValues(ArrayList<Coordinates> coordinates){
+        double smallestRoadDistance = getSmallestRoadDistance(coordinates);
+        double smallestUrbanDistance = getSmallestUrbanDistance(coordinates);
+        double smallestAirfieldDistance = getSmallestAirfieldDistance(coordinates);
+
+        int i;
+        double current;
+        double normalized;
+        for(i=0;i<coordinates.size();i++){
+            current = coordinates.get(i).getShortestRoadDistance();
+            normalized = smallestRoadDistance/current;
+            coordinates.get(i).setShortestRoadDistance(normalized);
+        }
+
+        for(i=0;i<coordinates.size();i++){
+            current = coordinates.get(i).getShortestUrbanAreasDistance();
+            normalized = smallestUrbanDistance/current;
+            coordinates.get(i).setShortestUrbanAreasDistance(normalized);
+        }
+
+        for(i=0;i<coordinates.size();i++){
+            current = coordinates.get(i).getShortestAirfieldDistance();
+            normalized = smallestAirfieldDistance/current;
+            coordinates.get(i).setShortestAirfieldDistance(normalized);
+        }
+
+    }
+
+    protected double getSmallestRoadDistance(ArrayList<Coordinates> coordinates){
+        double smallest = coordinates.get(1).getShortestRoadDistance();
+
+        int i;
+        for(i=0;i<coordinates.size();i++){
+            if(coordinates.get(i).getShortestRoadDistance() < smallest){
+                smallest = coordinates.get(i).getShortestRoadDistance();
+            }
+        }
+
+        return smallest;
+    }
+
+    protected double getSmallestUrbanDistance(ArrayList<Coordinates> coordinates){
+        double smallest = coordinates.get(1).getShortestUrbanAreasDistance();
+
+        int i;
+        for(i=0;i<coordinates.size();i++){
+            if(coordinates.get(i).getShortestUrbanAreasDistance() < smallest){
+                smallest = coordinates.get(i).getShortestUrbanAreasDistance();
+            }
+        }
+
+        return smallest;
+    }
+
+    protected double getSmallestAirfieldDistance(ArrayList<Coordinates> coordinates){
+        double smallest = coordinates.get(1).getShortestAirfieldDistance();
+
+        int i;
+        for(i=0;i<coordinates.size();i++){
+            if(coordinates.get(i).getShortestAirfieldDistance() < smallest){
+                smallest = coordinates.get(i).getShortestAirfieldDistance();
+            }
+        }
+
+        return smallest;
     }
     
 }
