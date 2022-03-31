@@ -101,7 +101,7 @@ public class AggregationController extends HttpServlet{
 
         
         String option = "roads";
-        int numberOfPoints = 5;
+        int numberOfPoints = 100;
 
         double sumOfColumn;
         int i;
@@ -273,13 +273,13 @@ public class AggregationController extends HttpServlet{
         ArrayList<Coordinates> bestCoordinates = new ArrayList<Coordinates>();
 
 
-        // if(numberOfPoints > aggregationValues.size()){
-        //     throw new ArrayIndexOutOfBoundsException();
-        // }else{ 
-        //     for(i=0;i<numberOfPoints;i++){
-        //         bestCoordinates.add(aggregationValues.get(i));
-        //     }
-        // }
+        if(numberOfPoints > aggregationValues.size()){
+            throw new ArrayIndexOutOfBoundsException();
+        }else{ 
+            for(i=0;i<numberOfPoints;i++){
+                bestCoordinates.add(aggregationValues.get(i));
+            }
+        }
         
         //send normalised values as json
         utility.sendCoordinatesAsJson(response,bestCoordinates);

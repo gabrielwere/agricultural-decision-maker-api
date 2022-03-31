@@ -4,4 +4,9 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+
+  <error-page>
+    <exception-type>java.lang.ArrayIndexOutOfBoundsException</exception-type>
+    <location>/ArrayOutOfBounds</location>
+  </error-page>
 </web-app>
