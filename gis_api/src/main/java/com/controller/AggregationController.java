@@ -2,6 +2,8 @@ package com.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -98,7 +100,8 @@ public class AggregationController extends HttpServlet{
         //| AIRFIELDS   |             |        |      1    |
 
         
-        String option = "airfields";
+        String option = "roads";
+        int numberOfPoints = 5;
 
         double sumOfColumn;
         int i;
@@ -124,14 +127,6 @@ public class AggregationController extends HttpServlet{
                 pairwiseMatrix[2][1] = 1;
                 pairwiseMatrix[2][2] = 1;
 
-              
-
-                for(i=0;i<3;i++){
-                    for(j=0;j<3;j++){
-                        System.out.printf("%f\t",pairwiseMatrix[i][j]);
-                    }
-                    System.out.println();
-                }
 
                 for(i=0;i<3;i++){
 
@@ -163,14 +158,6 @@ public class AggregationController extends HttpServlet{
                 pairwiseMatrix[2][1] = 1/7.0;
                 pairwiseMatrix[2][2] = 1;
  
- 
-                for(i=0;i<3;i++){
-                    for(j=0;j<3;j++){
-                        System.out.printf("%f\t",pairwiseMatrix[i][j]);
-                    }
-                    System.out.println();
-                }
- 
                 for(i=0;i<3;i++){
  
                     sumOfColumn = 0.0;
@@ -200,14 +187,6 @@ public class AggregationController extends HttpServlet{
                 pairwiseMatrix[2][0] = 7;
                 pairwiseMatrix[2][1] = 7;
                 pairwiseMatrix[2][2] = 1;
- 
- 
-                for(i=0;i<3;i++){
-                    for(j=0;j<3;j++){
-                        System.out.printf("%f\t",pairwiseMatrix[i][j]);
-                    }
-                    System.out.println();
-                }
  
                 for(i=0;i<3;i++){
  
@@ -271,8 +250,39 @@ public class AggregationController extends HttpServlet{
         //normalize the values
         normalizeValues(aggregationValues);
         
+
+        //calcuate preferemce score for each coordinate
+        //using the weighted sum model
+        double preferenceScore;
+
+        for(i=0;i<aggregationValues.size();i++){
+            double weightedRoadPerformanceValue = aggregationValues.get(i).getShortestRoadDistance() * weightOfRoads;
+            double weightedAirfieldPerformanceValue = aggregationValues.get(i).getShortestAirfieldDistance() * weightOfAirfields;
+            double weightedUrbanPerformanceValue = aggregationValues.get(i).getShortestUrbanAreasDistance() * weightOfUrban;
+
+            preferenceScore = weightedRoadPerformanceValue + weightedAirfieldPerformanceValue + weightedUrbanPerformanceValue;
+            aggregationValues.get(i).setPreferenceScore(preferenceScore);
+        }
+
+        Collections.sort(aggregationValues,new Comparator<Coordinates>(){
+            public int compare(Coordinates cood1,Coordinates cood2){
+                return Double.compare(cood2.getPreferenceScore(), cood1.getPreferenceScore());
+            }
+        });
+
+        ArrayList<Coordinates> bestCoordinates = new ArrayList<Coordinates>();
+
+
+        // if(numberOfPoints > aggregationValues.size()){
+        //     throw new ArrayIndexOutOfBoundsException();
+        // }else{ 
+        //     for(i=0;i<numberOfPoints;i++){
+        //         bestCoordinates.add(aggregationValues.get(i));
+        //     }
+        // }
+        
         //send normalised values as json
-        utility.sendCoordinatesAsJson(response,aggregationValues);
+        utility.sendCoordinatesAsJson(response,bestCoordinates);
     }
 
     protected void normalizeValues(ArrayList<Coordinates> coordinates){

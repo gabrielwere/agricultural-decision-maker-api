@@ -1,12 +1,13 @@
 package com.model;
 
-public class Coordinates {
+public class Coordinates{
 
     private double latitude;
     private double longitude;
     private double shortestRoadDistance;
     private double shortestAirfieldDistance;
     private double shortestUrbanAreasDistance;
+    private double preferenceScore;
 
     public Coordinates(double latitude,double longitude){
         this.latitude = latitude;
@@ -33,6 +34,10 @@ public class Coordinates {
         return this.shortestUrbanAreasDistance;
     }
 
+    public double getPreferenceScore(){
+        return this.preferenceScore;
+    }
+
     public void setShortestRoadDistance(double shortestRoadDistance){
         this.shortestRoadDistance = shortestRoadDistance;
     }
@@ -43,6 +48,10 @@ public class Coordinates {
 
     public void setShortestUrbanAreasDistance(double shortestUrbanAreasDistance){
         this.shortestUrbanAreasDistance = shortestUrbanAreasDistance;
+    }
+
+    public void setPreferenceScore(double preferenceScore){
+        this.preferenceScore = preferenceScore;
     }
 
     //formula to calculate distance between two points
