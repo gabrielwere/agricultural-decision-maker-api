@@ -19,7 +19,7 @@ public class SoilController extends HttpServlet{
         SoilDAO soilDao = new SoilDAO();
         Utility utility = new Utility();
 
-        ArrayList<Coordinates> soilValues = soilDao.getSoil("deep", "well drained", "well");
+        ArrayList<Coordinates> soilValues = soilDao.getSoil("deep", "well drained", "well",5.5,6.5);
 
         utility.sendCoordinatesAsJson(response, soilValues);
     }

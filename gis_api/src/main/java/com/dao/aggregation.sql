@@ -25,6 +25,8 @@ cte_soil_latitude AS(
 	sdra_descr = ?
 	AND
 	rdep_descr = ?
+	AND
+	phaq BETWEEN ? AND ?
 ),
 cte_soil_longitude AS(
 	SELECT
@@ -39,6 +41,8 @@ cte_soil_longitude AS(
 	sdra_descr = ?
 	AND
 	rdep_descr = ?
+	AND
+	phaq BETWEEN ? AND ?
 	
 )
 

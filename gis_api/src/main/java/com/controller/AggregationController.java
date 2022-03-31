@@ -35,7 +35,9 @@ public class AggregationController extends HttpServlet{
             "well",
             "deep",
             16,
-            25
+            25,
+            5.5,
+            6.5
         );
         
         ArrayList<Coordinates> roadValues = roadsDAO.getRoads();
@@ -101,7 +103,7 @@ public class AggregationController extends HttpServlet{
 
         
         String option = "roads";
-        int numberOfPoints = 100;
+        int numberOfPoints = 5;
 
         double sumOfColumn;
         int i;
@@ -282,7 +284,7 @@ public class AggregationController extends HttpServlet{
         }
         
         //send normalised values as json
-        utility.sendCoordinatesAsJson(response,bestCoordinates);
+        utility.sendCoordinatesAsJson(response,aggregationValues);
     }
 
     protected void normalizeValues(ArrayList<Coordinates> coordinates){

@@ -12,7 +12,7 @@ public class SoilDAO {
     String password = "ivar31";
     String url = "jdbc:postgresql://127.0.0.1:5432/sdb";
 
-    public ArrayList<Coordinates> getSoil(String rootableDepth,String soilDrainage,String surfaceDrainage){
+    public ArrayList<Coordinates> getSoil(String rootableDepth,String soilDrainage,String surfaceDrainage,double minimumSoilPH,double maximumSoilPH){
         Queries query = new Queries();
         String sql = query.soilQuery;
         
@@ -37,6 +37,8 @@ public class SoilDAO {
             statement.setString(1, surfaceDrainage);
             statement.setString(2, soilDrainage);
             statement.setString(3, rootableDepth);
+            statement.setDouble(4, minimumSoilPH);
+            statement.setDouble(5, maximumSoilPH);
 
             ResultSet rs = statement.executeQuery();
             while(rs.next()){

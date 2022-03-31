@@ -18,7 +18,8 @@ public class AggregationDAO {
     public ArrayList<Coordinates> getAggregation(
         double minRainfallAmount,double maxRainfallAmount,
         String soilDrainage,String surfaceDrainage,String rootableDepth,
-        double minTemperature,double maxTemperature
+        double minTemperature,double maxTemperature,
+        double minimumSoilPH,double maximumSoilPH
     ){
         Queries query = new Queries();
         String sql = query.aggregationQuery;
@@ -47,12 +48,16 @@ public class AggregationDAO {
             statement.setString(5, soilDrainage);
             statement.setString(6, surfaceDrainage);
             statement.setString(7, rootableDepth);
-            statement.setString(8, soilDrainage);
-            statement.setString(9, surfaceDrainage);
-            statement.setString(10, rootableDepth);
-            statement.setDouble(11, minTemperature);
-            statement.setDouble(12, maxTemperature);
-
+            statement.setDouble(8, minimumSoilPH);
+            statement.setDouble(9, maximumSoilPH);
+            statement.setString(10, soilDrainage);
+            statement.setString(11, surfaceDrainage);
+            statement.setString(12, rootableDepth);
+            statement.setDouble(13, minimumSoilPH);
+            statement.setDouble(14, maximumSoilPH);
+            statement.setDouble(15, minTemperature);
+            statement.setDouble(16, maxTemperature);
+           
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
                 double latitude = rs.getDouble("lat");
