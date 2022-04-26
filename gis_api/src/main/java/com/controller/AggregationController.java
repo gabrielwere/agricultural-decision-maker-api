@@ -1,5 +1,6 @@
 package com.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +15,9 @@ import com.dao.AggregationDAO;
 import com.dao.AirfieldsDAO;
 import com.dao.RoadsDAO;
 import com.dao.UrbanAreasDAO;
+import com.google.gson.Gson;
 import com.model.Coordinates;
+import com.model.CropModel;
 
 @WebServlet("/aggregation")
 
@@ -27,18 +30,53 @@ public class AggregationController extends HttpServlet{
         UrbanAreasDAO urbanAreasDAO = new UrbanAreasDAO();
         
         Utility utility = new Utility();
-        
+
+        // enable cors
+        // response.addHeader("Access-Control-Allow-Origin", "*");
+        // response.addHeader("Acess-Control-Allows-Methods", "GET,POST,HEAD,OPTIONS,PUT,DELETE");
+        // response.addHeader("Content-Type", "application/json");
+        // response.addHeader("Access-Control-Allow-Credentials", "true");
+        // response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, origin, content-type, accept");
+
+
+
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = request.getReader();
+
+        try{
+            String line;
+            while((line = reader.readLine()) != null){
+                sb.append(line).append("\n");
+            }
+        }catch(Exception e){
+            System.out.println(e);
+            return;
+        }finally{
+            reader.close();
+        }
+
+        // response.setContentType("application/json");
+        String jsonData = sb.toString();
+        System.out.println("JSON DATA:"+jsonData);
+        Gson gson = new Gson();
+
+        CropModel cropData = gson.fromJson(jsonData, CropModel.class);
+
+        System.out.println(System.currentTimeMillis());
+
         ArrayList<Coordinates> aggregationValues = aggregationDao.getAggregation(
-            1000,
-            1200,
-            "well drained",
-            "well",
-            "deep",
-            16,
-            25,
-            5.5,
-            6.5
+            cropData.getMinRainfallAmount(),
+            cropData.getMaxRainfallAmount(),
+            cropData.getSoilDrainage(),
+            cropData.getSurfaceDrainage(),
+            cropData.getRootableDepth(),
+            cropData.getMinTemperature(),
+            cropData.getMaxTemperature(),
+            cropData.getMinimumSoilPH(),
+            cropData.getMaximumSoilPH()
         );
+
+        System.out.println(System.currentTimeMillis());
         
         ArrayList<Coordinates> roadValues = roadsDAO.getRoads();
         ArrayList<Coordinates> airfieldValues = airfieldsDAO.getAirfields();
@@ -103,7 +141,6 @@ public class AggregationController extends HttpServlet{
 
         
         String option = "roads";
-        int numberOfPoints = 5;
 
         double sumOfColumn;
         int i;
@@ -271,19 +308,9 @@ public class AggregationController extends HttpServlet{
                 return Double.compare(cood2.getPreferenceScore(), cood1.getPreferenceScore());
             }
         });
-
-        ArrayList<Coordinates> bestCoordinates = new ArrayList<Coordinates>();
-
-
-        if(numberOfPoints > aggregationValues.size()){
-            throw new ArrayIndexOutOfBoundsException();
-        }else{ 
-            for(i=0;i<numberOfPoints;i++){
-                bestCoordinates.add(aggregationValues.get(i));
-            }
-        }
         
         //send normalised values as json
+       
         utility.sendCoordinatesAsJson(response,aggregationValues);
     }
 
