@@ -11,13 +11,15 @@ public class CropModel {
     private double minimumSoilPH;
     private double minimumTemperature;
     private double maximumTemperature;
+    private String emphasis;
 
 
     public CropModel(String cropName,
     double maxRainfallAmount,double minRainfallAmount,
     String soilDrainage,String surfaceDrainage,String rootableDepth,
     double maximumSoilPH,double minimumSoilPH,
-    double minTemperature,double maxTemperature){
+    double minTemperature,double maxTemperature,
+    String emphasis){
 
         this.cropName = cropName;
         this.maximumRainfall = maxRainfallAmount;
@@ -29,6 +31,7 @@ public class CropModel {
         this.minimumSoilPH = minimumSoilPH;
         this.minimumTemperature = minTemperature;
         this.maximumTemperature = maxTemperature;
+        this.emphasis = emphasis;
 
     }
     public String getCropName(){
@@ -71,7 +74,8 @@ public class CropModel {
         return this.maximumTemperature;
     }
 
+    public String getEmphasis(){
+        return this.emphasis;
+    }
 
-
-    
 }

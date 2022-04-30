@@ -1,64 +1,35 @@
-WITH cte_rainfall_latitude AS(
-	SELECT
-	TRUNC(ST_Y(ST_CENTROID(rainfall_vector.geom))::NUMERIC,1) AS lat
-	FROM environmental.rainfall_vector
+SELECT latitude::DOUBLE PRECISION,longitude::DOUBLE PRECISION FROM environmental.temp_vector
+WHERE temp_value BETWEEN ? AND ?
+AND
+latitude IN
+(
+	SELECT latitude FROM environmental.soils
 	WHERE
-	rainfall_amount BETWEEN ? AND ?
-),
-cte_rainfall_longitude AS(
-	SELECT
-	TRUNC(ST_X(ST_CENTROID(rainfall_vector.geom))::NUMERIC,1) AS long
-	FROM environmental.rainfall_vector
-	WHERE
-	rainfall_amount BETWEEN ? AND ?
-),
-cte_soil_latitude AS(
-	SELECT
-	TRUNC(ST_Y(ST_CENTROID(soils.geom))::NUMERIC,1)
-	FROM environmental.soils
-	INNER JOIN cte_rainfall_latitude
-	ON
-	cte_rainfall_latitude.lat = TRUNC(ST_Y(ST_CENTROID(soils.geom))::NUMERIC,1)
-	WHERE
-	drai_descr = ?
+	phaq BETWEEN ? AND ?
 	AND
 	sdra_descr = ?
-	AND
-	rdep_descr = ?
-	AND
-	phaq BETWEEN ? AND ?
-),
-cte_soil_longitude AS(
-	SELECT
-	TRUNC(ST_X(ST_CENTROID(soils.geom))::NUMERIC,1)
-	FROM environmental.soils
-	INNER JOIN cte_rainfall_longitude
-	ON
-	cte_rainfall_longitude.long = TRUNC(ST_X(ST_CENTROID(soils.geom))::NUMERIC,1)
+ 	AND
+	latitude IN
+	(
+		SELECT latitude FROM environmental.rainfall_vector
+		WHERE
+		rainfall_amount BETWEEN ? AND ?
+	)
+)
+AND
+longitude IN
+(
+	SELECT longitude FROM environmental.soils
 	WHERE
-	drai_descr = ?
+	phaq BETWEEN ? AND ?
 	AND
 	sdra_descr = ?
-	AND
-	rdep_descr = ?
-	AND
-	phaq BETWEEN ? AND ?
-	
-)
-
-SELECT 
-ST_Y(ST_CENTROID(temp_vector.geom)) AS lat,
-ST_X(ST_CENTROID(temp_vector.geom)) AS long
-
-FROM 
-environmental.temp_vector
-WHERE 
-temp_value BETWEEN ? AND ?
-AND
-TRUNC(ST_Y(ST_CENTROID(temp_vector.geom))::NUMERIC,1) IN (
-	SELECT * FROM cte_soil_latitude
-)
-AND
-TRUNC(ST_X(ST_CENTROID(temp_vector.geom))::NUMERIC,1) IN (
-	SELECT * FROM cte_soil_longitude
+ 	AND
+	longitude IN
+	(
+		SELECT longitude FROM environmental.rainfall_vector
+		WHERE
+		rainfall_amount BETWEEN ? AND ?
+	)
 );
+

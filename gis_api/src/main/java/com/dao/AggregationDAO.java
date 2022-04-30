@@ -17,7 +17,7 @@ public class AggregationDAO {
 
     public ArrayList<Coordinates> getAggregation(
         double minRainfallAmount,double maxRainfallAmount,
-        String soilDrainage,String surfaceDrainage,String rootableDepth,
+        String surfaceDrainage,
         double minTemperature,double maxTemperature,
         double minimumSoilPH,double maximumSoilPH
     ){
@@ -41,27 +41,23 @@ public class AggregationDAO {
             Connection connection = DriverManager.getConnection(url, user, password);
             PreparedStatement statement = connection.prepareStatement(sql)
         ){
-            statement.setDouble(1, minRainfallAmount);
-            statement.setDouble(2, maxRainfallAmount);
-            statement.setDouble(3, minRainfallAmount);
-            statement.setDouble(4, maxRainfallAmount);
-            statement.setString(5, soilDrainage);
-            statement.setString(6, surfaceDrainage);
-            statement.setString(7, rootableDepth);
+            statement.setDouble(1, minTemperature);
+            statement.setDouble(2, maxTemperature);
+            statement.setDouble(3, minimumSoilPH);
+            statement.setDouble(4, maximumSoilPH);
+            statement.setString(5, surfaceDrainage);
+            statement.setDouble(6, minRainfallAmount);
+            statement.setDouble(7, maxRainfallAmount);
             statement.setDouble(8, minimumSoilPH);
             statement.setDouble(9, maximumSoilPH);
-            statement.setString(10, soilDrainage);
-            statement.setString(11, surfaceDrainage);
-            statement.setString(12, rootableDepth);
-            statement.setDouble(13, minimumSoilPH);
-            statement.setDouble(14, maximumSoilPH);
-            statement.setDouble(15, minTemperature);
-            statement.setDouble(16, maxTemperature);
+            statement.setString(10, surfaceDrainage);
+            statement.setDouble(11, minRainfallAmount);
+            statement.setDouble(12, maxRainfallAmount);
            
             ResultSet rs = statement.executeQuery();
             while(rs.next()){
-                double latitude = rs.getDouble("lat");
-                double longitude = rs.getDouble("long");
+                double latitude = rs.getDouble("latitude");
+                double longitude = rs.getDouble("longitude");
 
                 newCoordinate= new Coordinates(latitude, longitude);
                 coordinates.add(newCoordinate);

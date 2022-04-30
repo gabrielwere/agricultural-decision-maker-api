@@ -62,22 +62,18 @@ public class AggregationController extends HttpServlet{
 
         CropModel cropData = gson.fromJson(jsonData, CropModel.class);
 
-        System.out.println(System.currentTimeMillis());
+      
 
         ArrayList<Coordinates> aggregationValues = aggregationDao.getAggregation(
             cropData.getMinRainfallAmount(),
             cropData.getMaxRainfallAmount(),
-            cropData.getSoilDrainage(),
             cropData.getSurfaceDrainage(),
-            cropData.getRootableDepth(),
             cropData.getMinTemperature(),
             cropData.getMaxTemperature(),
             cropData.getMinimumSoilPH(),
             cropData.getMaximumSoilPH()
         );
 
-        System.out.println(System.currentTimeMillis());
-        
         ArrayList<Coordinates> roadValues = roadsDAO.getRoads();
         ArrayList<Coordinates> airfieldValues = airfieldsDAO.getAirfields();
         ArrayList<Coordinates> urbanAreasValues = urbanAreasDAO.getUrbanAreas();
@@ -140,7 +136,7 @@ public class AggregationController extends HttpServlet{
         //| AIRFIELDS   |             |        |      1    |
 
         
-        String option = "roads";
+        String option = cropData.getEmphasis();
 
         double sumOfColumn;
         int i;
@@ -308,7 +304,6 @@ public class AggregationController extends HttpServlet{
                 return Double.compare(cood2.getPreferenceScore(), cood1.getPreferenceScore());
             }
         });
-        
         //send normalised values as json
        
         utility.sendCoordinatesAsJson(response,aggregationValues);
