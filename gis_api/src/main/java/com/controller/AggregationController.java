@@ -237,6 +237,98 @@ public class AggregationController extends HttpServlet{
                 }
                 break;
             
+            case "roads&urban":
+                //first row
+                pairwiseMatrix[0][0] = 1;
+                pairwiseMatrix[0][1] = 1;
+                pairwiseMatrix[0][2] = 7.0;
+  
+                //second row
+                pairwiseMatrix[1][0] = 1;
+                pairwiseMatrix[1][1] = 1;
+                pairwiseMatrix[1][2] = 7.0;
+  
+                //third row
+                pairwiseMatrix[2][0] = 1/7.0;
+                pairwiseMatrix[2][1] = 1/7.0;
+                pairwiseMatrix[2][2] = 1;
+  
+                for(i=0;i<3;i++){
+  
+                    sumOfColumn = 0.0;
+  
+                    for(j=0;j<3;j++){ 
+                        sumOfColumn += pairwiseMatrix[j][i];
+                    }
+  
+                    for(j=0;j<3;j++){
+                        pairwiseMatrix[j][i] /= sumOfColumn;
+                    } 
+                }
+                break;
+
+            case "roads&airfields":
+                //first row
+                pairwiseMatrix[0][0] = 1;
+                pairwiseMatrix[0][1] = 1/7.0;
+                pairwiseMatrix[0][2] = 1/7.0;
+  
+                //second row
+                pairwiseMatrix[1][0] = 7.0;
+                pairwiseMatrix[1][1] = 1;
+                pairwiseMatrix[1][2] = 1;
+  
+                //third row
+                pairwiseMatrix[2][0] = 7.0;
+                pairwiseMatrix[2][1] = 1;
+                pairwiseMatrix[2][2] = 1;
+  
+                for(i=0;i<3;i++){
+  
+                    sumOfColumn = 0.0;
+  
+                    for(j=0;j<3;j++){ 
+                        sumOfColumn += pairwiseMatrix[j][i];
+                    }
+  
+                    for(j=0;j<3;j++){
+                        pairwiseMatrix[j][i] /= sumOfColumn;
+                    } 
+                }
+                break;
+
+            case "urban&airfields":
+                //first row
+                pairwiseMatrix[0][0] = 1;
+                pairwiseMatrix[0][1] = 7.0;
+                pairwiseMatrix[0][2] = 1;
+  
+                //second row
+                pairwiseMatrix[1][0] = 1/7.0;
+                pairwiseMatrix[1][1] = 1;
+                pairwiseMatrix[1][2] = 1/7.0;
+  
+                //third row
+                pairwiseMatrix[2][0] = 1;
+                pairwiseMatrix[2][1] = 7.0;
+                pairwiseMatrix[2][2] = 1;
+  
+                for(i=0;i<3;i++){
+  
+                    sumOfColumn = 0.0;
+  
+                    for(j=0;j<3;j++){ 
+                        sumOfColumn += pairwiseMatrix[j][i];
+                    }
+  
+                    for(j=0;j<3;j++){
+                        pairwiseMatrix[j][i] /= sumOfColumn;
+                    } 
+                }
+                break;
+                
+                
+            
             default:
                 //first row
                 pairwiseMatrix[0][0] = 1;
@@ -278,15 +370,15 @@ public class AggregationController extends HttpServlet{
         }
         weightOfAirfields = sumOfRow3/3;
 
-        System.out.println(weightOfUrban);
-        System.out.println(weightOfRoads);
-        System.out.println(weightOfAirfields);
+        System.out.println("Urban:"+weightOfUrban);
+        System.out.println("Roads:"+weightOfRoads);
+        System.out.println("Airfields:"+weightOfAirfields);
 
         //normalize the values
         normalizeValues(aggregationValues);
         
 
-        //calcuate preferemce score for each coordinate
+        //calcuate preference score for each coordinate
         //using the weighted sum model
         double preferenceScore;
 
